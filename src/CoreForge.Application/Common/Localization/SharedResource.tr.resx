@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true" />
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <!-- Validation -->
+  <data name="Validation_EmailRequired" xml:space="preserve">
+    <value>E-posta adresi zorunludur.</value>
+  </data>
+  <data name="Validation_EmailInvalid" xml:space="preserve">
+    <value>Geçerli bir e-posta adresi giriniz.</value>
+  </data>
+  <data name="Validation_PasswordRequired" xml:space="preserve">
+    <value>Şifre zorunludur.</value>
+  </data>
+  <data name="Validation_PasswordTooShort" xml:space="preserve">
+    <value>Şifre en az 8 karakter olmalıdır.</value>
+  </data>
+  <data name="Validation_FieldRequired" xml:space="preserve">
+    <value>Bu alan zorunludur.</value>
+  </data>
+  <data name="Validation_FieldTooLong" xml:space="preserve">
+    <value>Bu alan izin verilen maksimum uzunluğu aşıyor.</value>
+  </data>
+  <data name="Validation_SlugInvalid" xml:space="preserve">
+    <value>Slug yalnızca küçük harf, rakam ve tire içerebilir.</value>
+  </data>
+
+  <!-- Auth -->
+  <data name="Auth_InvalidCredentials" xml:space="preserve">
+    <value>E-posta adresi veya şifre hatalı.</value>
+  </data>
+  <data name="Auth_UserNotFound" xml:space="preserve">
+    <value>Kullanıcı bulunamadı.</value>
+  </data>
+  <data name="Auth_UserAlreadyExists" xml:space="preserve">
+    <value>Bu e-posta adresiyle zaten bir kullanıcı mevcut.</value>
+  </data>
+  <data name="Auth_InvalidToken" xml:space="preserve">
+    <value>Sağlanan token geçersiz veya süresi dolmuş.</value>
+  </data>
+  <data name="Auth_TokenExpired" xml:space="preserve">
+    <value>Oturumunuz sona erdi. Lütfen tekrar giriş yapın.</value>
+  </data>
+  <data name="Auth_RoleAssignmentFailed" xml:space="preserve">
+    <value>Kullanıcı rolü atanırken bir hata oluştu.</value>
+  </data>
+  <data name="Auth_AccountDisabled" xml:space="preserve">
+    <value>Bu hesap devre dışı bırakılmıştır.</value>
+  </data>
+
+  <!-- Payment -->
+  <data name="Payment_CheckoutFailed" xml:space="preserve">
+    <value>Ödeme oturumu oluşturulamadı.</value>
+  </data>
+  <data name="Payment_WebhookInvalid" xml:space="preserve">
+    <value>Geçersiz veya doğrulanamayan webhook imzası.</value>
+  </data>
+  <data name="Payment_SubscriptionNotFound" xml:space="preserve">
+    <value>Bu tenant için aktif abonelik bulunamadı.</value>
+  </data>
+  <data name="Payment_PlanNotAvailable" xml:space="preserve">
+    <value>İstenen abonelik planı mevcut değil.</value>
+  </data>
+
+  <!-- Tenant -->
+  <data name="Tenant_NotFound" xml:space="preserve">
+    <value>Tenant bulunamadı.</value>
+  </data>
+  <data name="Tenant_AlreadyExists" xml:space="preserve">
+    <value>Bu slug ile zaten bir tenant mevcut.</value>
+  </data>
+  <data name="Tenant_Deactivated" xml:space="preserve">
+    <value>Bu tenant devre dışı bırakılmıştır.</value>
+  </data>
+
+  <!-- General errors -->
+  <data name="Error_NotFound" xml:space="preserve">
+    <value>İstenen kaynak bulunamadı.</value>
+  </data>
+  <data name="Error_Unauthorized" xml:space="preserve">
+    <value>Bu işlemi gerçekleştirmek için yetkiniz yok.</value>
+  </data>
+  <data name="Error_Forbidden" xml:space="preserve">
+    <value>Bu kaynağa erişim yasaktır.</value>
+  </data>
+  <data name="Error_Conflict" xml:space="preserve">
+    <value>Bir çakışma oluştu. Kaynak zaten mevcut olabilir.</value>
+  </data>
+  <data name="Error_BadRequest" xml:space="preserve">
+    <value>İstek geçersiz veri içeriyor.</value>
+  </data>
+  <data name="Error_InternalServer" xml:space="preserve">
+    <value>Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.</value>
+  </data>
+</root>

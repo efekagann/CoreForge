@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: coreforge
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Run unit tests (Domain + Application)
+        run: |
+          dotnet test tests/CoreForge.Domain.Tests \
+            --no-build -c Release \
+            --logger "trx;LogFileName=domain-results.trx" \
+            --collect:"XPlat Code Coverage"
+
+          dotnet test tests/CoreForge.Application.Tests \
+            --no-build -c Release \
+            --logger "trx;LogFileName=application-results.trx" \
+            --collect:"XPlat Code Coverage"
+
+      - name: Apply migrations
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5433;Database=coreforge;Username=postgres;Password=postgres"
+        run: |
+          dotnet tool restore
+          cd src/CoreForge.WebAPI
+          dotnet ef database update --project ../CoreForge.Infrastructure -- --environment Development
+        continue-on-error: true
+
+      - name: Run integration tests
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5433;Database=coreforge;Username=postgres;Password=postgres"
+          Redis__ConnectionString: "localhost:6379"
+        run: |
+          dotnet test tests/CoreForge.Integration.Tests \
+            --no-build -c Release \
+            --logger "trx;LogFileName=integration-results.trx" \
+            --filter "Category=Integration"
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: '**/TestResults/**/*.trx'
+          retention-days: 7
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-reports
+          path: '**/TestResults/**/coverage.cobertura.xml'
+          retention-days: 7

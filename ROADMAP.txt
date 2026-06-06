@@ -1,0 +1,182 @@
+================================================================================
+  COREFORGE — SaaS Starter Kit (.NET 9 + Clean Architecture)
+  Gelistirme Roadmap'i | Tahmini Sure: 16 Hafta
+================================================================================
+
+HEDEF
+------
+CodeCanyon ve Gumroad'da satilik, production-ready, C#/.NET 9 SaaS Altyapisi.
+Hedef gelir: $300-800/ay (6. aydan itibaren)
+
+TEKNOLOJI KARARLARI
+--------------------
+  Framework    : .NET 9
+  Primary DB   : PostgreSQL 17 (EF Core 9 + Npgsql)
+  Cache/Tokens : Redis 7
+  Auth         : ASP.NET Identity + JWT + Refresh Token (Redis)
+  Tenancy      : Row-based (EF Core Global Query Filter)
+  Payment      : Soyutlama katmani (Mock + Stripe)
+  Local Dev    : Docker Compose (tek komutla kurulum)
+  Alt. DB      : SQL Server (appsettings.json ile gecis)
+
+================================================================================
+  FAZ 1 — FOUNDATION (Hafta 1-2)
+  Hedef: Solution ayaga kalkar, Docker calisir
+================================================================================
+
+  [ ] Solution + 5 proje olusturma
+        - CoreForge.Domain        (Class Library)
+        - CoreForge.Application   (Class Library)
+        - CoreForge.Infrastructure(Class Library)
+        - CoreForge.Identity      (Class Library)
+        - CoreForge.WebAPI        (ASP.NET Core Web API)
+
+  [ ] Project reference zinciri
+        WebAPI -> Application, Infrastructure, Identity
+        Identity -> Application, Infrastructure
+        Infrastructure -> Application, Domain
+        Application -> Domain
+
+  [ ] NuGet paketleri (katman bazli kurulum)
+
+  [ ] docker-compose.yml olusturma (PostgreSQL 17 + Redis 7)
+
+  [ ] BaseEntity, AuditableEntity, DomainEvent altyapisi
+
+  [ ] Generic Repository + Unit of Work
+        Interface: Domain katmaninda
+        Implementation: Infrastructure katmaninda
+
+  [ ] Result<T> pattern (domain result donusu)
+
+  MILESTONE: `docker compose up` + `dotnet run` -> Swagger acilir
+
+================================================================================
+  FAZ 2 — CORE INFRASTRUCTURE (Hafta 3-4)
+  Hedef: Loglama, hata yonetimi, API standartlari
+================================================================================
+
+  [ ] EF Core DbContext + Migration altyapisi
+  [ ] Npgsql provider + SQL Server fallback
+  [ ] Redis baglantisi (IDistributedCache)
+  [ ] Serilog (Console + File sink, structured logging)
+  [ ] Global Exception Middleware (ProblemDetails RFC 7807)
+  [ ] FluentValidation pipeline behavior (MediatR)
+  [ ] API Versioning (/api/v1/...)
+  [ ] Health Check endpoint (/health — DB + Redis durumu)
+  [ ] Pagination yardimci sinifi (PagedList<T>)
+
+  MILESTONE: Hatali istek -> standart JSON hata. /health yesil.
+
+================================================================================
+  FAZ 3 — AUTHENTICATION & AUTHORIZATION (Hafta 5-6)
+  Hedef: Guvenli, production-ready auth sistemi
+================================================================================
+
+  [ ] ASP.NET Identity entegrasyonu (ApplicationUser)
+  [ ] JWT token uretimi (15 dk expiry)
+  [ ] Refresh Token (Redis'te saklanir, 7 gun)
+  [ ] Endpoint'ler: Register / Login / Logout / Refresh
+  [ ] Email dogrulama akisi (token tabanli)
+  [ ] Sifre sifirlama akisi
+  [ ] Rol yonetimi (Admin, User, SuperAdmin)
+  [ ] ICurrentUserService (UserId + TenantId erisimi)
+  [ ] [Authorize] policy'leri + custom attribute'lar
+
+  MILESTONE: Postman collection ile tam auth akisi test edilebilir.
+
+================================================================================
+  FAZ 4 — MULTI-TENANCY (Hafta 7-8)  [FIYAT FARKI YARATAN OZELLIK]
+  Hedef: Row-based tenancy seffaf calissin
+================================================================================
+
+  [ ] Tenant entity (Id, Name, Domain, Plan, IsActive)
+  [ ] ITenantProvider + header/subdomain cozumleyici
+  [ ] EF Core global query filter (TenantId otomatik filtreleme)
+  [ ] Tenant yonetim endpoint'leri (CRUD)
+  [ ] Tenant-aware seeder (test verisi)
+  [ ] Tenant izolasyon testleri
+  [ ] SuperAdmin rolu -> tum tenant'lari yonetebilir
+
+  MILESTONE: 2 tenant, ayni DB'de tamamen izole calisir.
+
+================================================================================
+  FAZ 5 — PAYMENT INFRASTRUCTURE (Hafta 9-10)
+  Hedef: Odeme altyapisi tak-calistir olsun
+================================================================================
+
+  [ ] IPaymentService soyutlama katmani
+  [ ] MockPaymentService (her zaman success, dev ortami)
+  [ ] StripePaymentService (gercek Stripe SDK)
+  [ ] Checkout session olusturma endpoint'i
+  [ ] Webhook handler (Stripe event'leri)
+  [ ] SubscriptionPlan entity (Free, Pro, Enterprise)
+  [ ] Plan bazli feature kontrolu (IFeatureService)
+  [ ] Odeme gecmisi endpoint'i
+
+  MILESTONE: "PaymentProvider":"Mock" -> anlik success.
+             "PaymentProvider":"Stripe" -> gercek Stripe.
+
+================================================================================
+  FAZ 6 — SAAS TAMAMLAYICI OZELLIKLER (Hafta 11-12)
+  Hedef: Enterprise-ready ozellikler
+================================================================================
+
+  [ ] Audit Log (AuditEntry tablosu — kim, ne zaman, ne yapti)
+  [ ] Rate Limiting (Redis tabanli, plan bazli limit)
+  [ ] IEmailService -> MailKit impl + Mock
+  [ ] Email template sistemi (Razor)
+  [ ] Bildirim servisi (Email + in-app)
+  [ ] Background Job altyapisi (Hangfire veya Hosted Service)
+  [ ] IStorageService -> Local + S3 mock
+  [ ] Soft Delete global filter (DeletedAt kolonu)
+
+  MILESTONE: CRUD audit log'a dusuyor. Rate limit asimi 429 donuyor.
+
+================================================================================
+  FAZ 7 — DEVELOPER EXPERIENCE (Hafta 13-14)
+  Hedef: Alici 30 dakikada kurulsun
+================================================================================
+
+  [ ] Swagger/OpenAPI tam dokumantasyon
+  [ ] Swagger'da JWT auth butonu
+  [ ] Postman collection export
+  [ ] appsettings.json sema dokumantasyonu
+  [ ] Seed data komutu (`dotnet run --seed`)
+  [ ] PowerShell setup scripti
+  [ ] ARCHITECTURE.md (katman diyagrami)
+  [ ] CONTRIBUTING.md
+
+  MILESTONE: Temiz bilgisayarda README ile 30 dk'da calisir.
+
+================================================================================
+  FAZ 8 — TEST, POLISH & RELEASE (Hafta 15-16)
+  Hedef: Yayina hazir, guvenilir urun
+================================================================================
+
+  [ ] Unit testler (Application katmani handler'lari)
+  [ ] Integration testler (WebApplicationFactory)
+  [ ] Auth akisi E2E testleri
+  [ ] Multi-tenancy izolasyon testleri
+  [ ] EF Core query optimizasyonu (N+1 kontrolu)
+  [ ] Security review (OWASP Top 10)
+  [ ] CodeCanyon submission paketi hazirlama
+  [ ] Demo video (3-5 dakika ekran kaydi)
+  [ ] CodeCanyon urun aciklamasi + screenshots
+  [ ] Gumroad urun sayfasi
+
+  MILESTONE: CodeCanyon'a submit edildi.
+
+================================================================================
+  TOPLAM: 16 HAFTA | HAFTADA ~10-15 SAAT
+================================================================================
+
+  MVP (Satilabilir Minimum): Faz 1+2+3+5 = ~8 hafta
+  Tam Urun:                  Faz 1-8     = ~16 hafta
+
+  Fiyat Stratejisi:
+    Launch    : $39 (ilk 10 alis $29 kampanya)
+    Olgunlasma: $79-99
+    Hedef     : $300-800/ay (6. aydan sonra)
+
+================================================================================
